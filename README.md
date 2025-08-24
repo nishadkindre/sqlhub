@@ -2,6 +2,9 @@
 
 A comprehensive web-based SQL workbench that simulates a MySQL database environment entirely in the frontend. Users can create databases, tables, execute SQL queries, and perform all CRUD operations without requiring any backend infrastructure.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/44259149-a484-4fdf-a70e-c26a534694b8" />
+
+
 ## 🚀 Features
 
 ### Core Functionality

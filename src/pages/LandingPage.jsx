@@ -240,10 +240,9 @@ function LandingPage() {
         }}
       >
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-          <Box sx={{ mb: 4 }}>
+          {/* <Box sx={{ mb: 4 }}>
             <Chip
-              // icon={<Sparkles size={18} />}
-              label="✨ New Version 2.0 Available"
+              label="✨ New Version 1.0 Available - With Exciting Features!"
               sx={{
                 background: 'rgba(255, 255, 255, 0.15)',
                 backdropFilter: 'blur(10px)',
@@ -254,7 +253,7 @@ function LandingPage() {
                 fontWeight: 600
               }}
             />
-          </Box>
+          </Box> */}
 
           <Typography
             variant={isMobile ? 'h3' : 'h1'}

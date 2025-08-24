@@ -226,7 +226,7 @@ function Header() {
         {/* Right Side Actions */}
         <Stack direction="row" spacing={1} alignItems="center">
           {/* New Version Badge */}
-          <Box
+          {/* <Box
             sx={{
               display: { xs: 'none', md: 'flex' },
               alignItems: 'center',
@@ -243,7 +243,7 @@ function Header() {
           >
             <Sparkles size={14} />
             v2.0
-          </Box>
+          </Box> */}
 
           {/* Theme Toggle */}
           <Tooltip title={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`} arrow>
@@ -281,7 +281,7 @@ function Header() {
           <Tooltip title="View on GitHub" arrow>
             <IconButton
               component="a"
-              href="https://github.com/nishad-kindre-medtigo/sqlhub"
+              href="https://github.com/nishadkindre/sqlhub"
               target="_blank"
               rel="noopener noreferrer"
               sx={{

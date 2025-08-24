@@ -268,31 +268,6 @@ function WorkbenchPage() {
         </Box>
         <QueryHistory />
       </Drawer>
-
-      {/* Mobile Floating Action Button for History */}
-      {isMobile && (
-        <Fab
-          color="primary"
-          aria-label="query history"
-          onClick={handleHistoryToggle}
-          sx={{
-            position: 'fixed',
-            bottom: 24,
-            right: 24,
-            zIndex: theme.zIndex.fab,
-            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-            color: 'white',
-            boxShadow: '0 8px 32px rgba(245, 158, 11, 0.4)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
-              transform: 'scale(1.1)',
-              boxShadow: '0 12px 48px rgba(245, 158, 11, 0.5)'
-            }
-          }}
-        >
-          <HistoryIcon />
-        </Fab>
-      )}
     </Box>
   );
 }

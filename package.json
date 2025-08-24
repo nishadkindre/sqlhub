@@ -1,7 +1,7 @@
 {
   "name": "sqlhub",
-  "private": true,
-  "version": "2.0.0",
+  "public": true,
+  "version": "1.0.0",
   "description": "SQL Workbench Simulator - Learn and practice SQL in a complete database environment",
   "type": "module",
   "keywords": [
@@ -17,6 +17,10 @@
     "name": "Nishad Kindre",
     "email": "nishadkindre@gmail.com",
     "github": "https://github.com/nishadkindre"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nishadkindre/sqlhub.git"
   },
   "license": "MIT",
   "scripts": {

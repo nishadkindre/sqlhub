@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
   Button,
-  List,
-  ListItem,
-  ListItemText,
   IconButton,
   Typography,
   Tabs,
   Tab,
   Box,
-  Chip,
-  Tooltip,
   Paper,
   useTheme,
   useMediaQuery,
   Stack,
-  Divider,
   Card,
   CardContent,
   Grid,
   InputBase,
-  Fade,
-  Backdrop
+  Backdrop,
+  Tooltip,
+  Slide
 } from '@mui/material';
 import {
   Code,
@@ -34,14 +28,25 @@ import {
   Search,
   Database,
   Zap,
-  FileCode,
-  Settings,
-  Sparkles,
-  ChevronRight,
   Edit3,
   BarChart3
 } from 'lucide-react';
 import { queryTemplates } from '../utils/queryTemplates';
+
+const SlideUpTransition = React.forwardRef(function Transition(props, ref) {
+  return (
+    <Slide 
+      direction="up" 
+      ref={ref} 
+      timeout={400}
+      easing={{
+        enter: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        exit: 'cubic-bezier(0.55, 0.055, 0.675, 0.19)'
+      }}
+      {...props} 
+    />
+  );
+});
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -63,7 +68,6 @@ function QueryTemplatesDialog({ open, onClose, onSelectQuery }) {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [tabValue, setTabValue] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedQuery, setSelectedQuery] = useState(null);
 
   // Handle escape key
   useEffect(() => {
@@ -86,7 +90,6 @@ function QueryTemplatesDialog({ open, onClose, onSelectQuery }) {
   const handleCopyQuery = async (query) => {
     try {
       await navigator.clipboard.writeText(query);
-      // You could add a toast notification here
     } catch (err) {
       console.error('Failed to copy query:', err);
       // Fallback for older browsers
@@ -127,45 +130,30 @@ function QueryTemplatesDialog({ open, onClose, onSelectQuery }) {
   const getCategoryIcon = (key) => {
     switch (key) {
       case 'basic':
-        return <Database size={20} color="white" />;
+        return <Database size={18} />;
       case 'crud':
-        return <Edit3 size={20} color="white" />;
+        return <Edit3 size={18} />;
       case 'advanced':
-        return <Zap size={20} color="white" />;
+        return <Zap size={18} />;
       case 'analytics':
-        return <BarChart3 size={20} color="white" />;
+        return <BarChart3 size={18} />;
       default:
-        return <Code size={20} color="white" />;
+        return <Code size={18} />;
     }
   };
 
-  const getCategoryIconForTab = (key) => {
+  const getCategoryColor = (key) => {
     switch (key) {
       case 'basic':
-        return <Database size={20} />;
+        return theme.palette.primary.main;
       case 'crud':
-        return <Edit3 size={20} />;
+        return theme.palette.success.main;
       case 'advanced':
-        return <Zap size={20} />;
+        return theme.palette.warning.main;
       case 'analytics':
-        return <BarChart3 size={20} />;
+        return theme.palette.info.main;
       default:
-        return <Code size={20} />;
-    }
-  };
-
-  const getCategoryGradient = (key) => {
-    switch (key) {
-      case 'basic':
-        return 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-      case 'crud':
-        return 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
-      case 'advanced':
-        return 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)';
-      case 'analytics':
-        return 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)';
-      default:
-        return 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)';
+        return theme.palette.secondary.main;
     }
   };
 
@@ -174,13 +162,11 @@ function QueryTemplatesDialog({ open, onClose, onSelectQuery }) {
       open={open}
       onClose={onClose}
       fullScreen
+      TransitionComponent={SlideUpTransition}
+      transitionDuration={400}
       PaperProps={{
         sx: {
-          background:
-            theme.palette.mode === 'dark'
-              ? 'linear-gradient(135deg, rgba(15, 15, 35, 0.98) 0%, rgba(26, 26, 46, 0.98) 50%, rgba(22, 33, 62, 0.98) 100%)'
-              : 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%)',
-          backdropFilter: 'blur(20px)',
+          backgroundColor: theme.palette.background.default,
           display: 'flex',
           flexDirection: 'column',
           height: '100vh',
@@ -190,56 +176,43 @@ function QueryTemplatesDialog({ open, onClose, onSelectQuery }) {
       BackdropComponent={Backdrop}
       BackdropProps={{
         sx: {
-          background: theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.6)',
-          backdropFilter: 'blur(12px)'
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          transition: 'opacity 400ms cubic-bezier(0.4, 0, 0.2, 1)'
         }
       }}
     >
       {/* Header */}
       <Box
         sx={{
-          p: 4,
-          background:
-            theme.palette.mode === 'dark'
-              ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)'
-              : 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)',
-          borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`
+          p: 3,
+          borderBottom: 1,
+          borderColor: 'divider',
+          backgroundColor: theme.palette.background.paper
         }}
       >
+        {/* Title and Close Button */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Box
               sx={{
-                width: 56,
-                height: 56,
-                borderRadius: 3,
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                backgroundColor: theme.palette.primary.main,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 8px 24px rgba(102, 126, 234, 0.3)'
+                color: 'white'
               }}
             >
-              <Code size={28} color="white" />
+              <Code size={20} />
             </Box>
             <Box>
-              <Typography
-                variant="h3"
-                sx={{
-                  fontWeight: 800,
-                  background:
-                    theme.palette.mode === 'dark'
-                      ? 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)'
-                      : 'linear-gradient(135deg, #1e293b 0%, #475569 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}
-              >
-                SQL Templates
+              <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>
+                SQL Query Templates
               </Typography>
-              <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                Ready-to-use query examples for every situation
+              <Typography variant="body2" color="text.secondary">
+                Choose from ready-to-use SQL queries for common operations
               </Typography>
             </Box>
           </Box>
@@ -247,18 +220,9 @@ function QueryTemplatesDialog({ open, onClose, onSelectQuery }) {
           <IconButton
             onClick={onClose}
             sx={{
-              width: 48,
-              height: 48,
-              borderRadius: 2,
-              background:
-                theme.palette.mode === 'dark'
-                  ? 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)'
-                  : 'linear-gradient(135deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.02) 100%)',
-              border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'}`,
-              color: 'text.primary',
               '&:hover': {
-                background: 'error.light',
-                color: 'error.main'
+                backgroundColor: theme.palette.error.light,
+                color: theme.palette.error.main
               }
             }}
           >
@@ -267,95 +231,70 @@ function QueryTemplatesDialog({ open, onClose, onSelectQuery }) {
         </Box>
 
         {/* Search Bar */}
-        <Box
+        <Paper
           sx={{
-            position: 'relative',
-            borderRadius: 3,
-            background:
-              theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.8)',
-            border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'}`,
-            backdropFilter: 'blur(20px)'
+            p: 1,
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: theme.palette.background.default,
+            border: 1,
+            borderColor: 'divider'
           }}
         >
-          <Box
-            sx={{
-              position: 'absolute',
-              left: 16,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'text.secondary'
-            }}
-          >
-            <Search size={20} />
+          <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
+            <Search size={20} color={theme.palette.text.secondary} />
           </Box>
           <InputBase
-            placeholder="Search templates..."
+            placeholder="Search templates by name, description, or SQL content..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{
-              width: '100%',
-              pl: 6,
-              pr: 2,
-              py: 2,
-              fontSize: '1rem',
-              fontWeight: 500
+              ml: 1,
+              flex: 1,
+              fontSize: '0.95rem'
             }}
           />
-        </Box>
+        </Paper>
       </Box>
 
       {/* Navigation Tabs */}
       <Box
         sx={{
-          px: 4,
-          background:
-            theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.5)',
-          borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`
+          borderBottom: 1,
+          borderColor: 'divider',
+          backgroundColor: theme.palette.background.paper
         }}
       >
         <Tabs
           value={tabValue}
           onChange={handleTabChange}
-          variant={isMobile ? 'scrollable' : 'fullWidth'}
+          variant={isMobile ? 'scrollable' : 'standard'}
           scrollButtons="auto"
           sx={{
-            minHeight: 64,
+            px: 3,
             '& .MuiTab-root': {
-              minHeight: 64,
               textTransform: 'none',
-              fontSize: '1rem',
-              fontWeight: 600,
-              color: 'text.secondary',
-              transition: 'all 0.2s ease-in-out',
+              fontSize: '0.95rem',
+              fontWeight: 500,
+              minHeight: 48,
               '&.Mui-selected': {
-                color: 'primary.main',
-                background:
-                  theme.palette.mode === 'dark'
-                    ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)'
-                    : 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)'
-              },
-              '&:hover': {
-                background:
-                  theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)'
+                fontWeight: 600
               }
-            },
-            '& .MuiTabs-indicator': {
-              height: 3,
-              borderRadius: '3px 3px 0 0',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
             }
           }}
         >
           {filteredCategories.map((category, index) => (
             <Tab
               key={category.key}
-              icon={
-                <Box sx={{ display: 'flex', alignItems: 'center', color: 'inherit' }}>
-                  {getCategoryIconForTab(category.key)}
-                </Box>
-              }
+              icon={getCategoryIcon(category.key)}
               label={category.title}
               iconPosition="start"
+              sx={{
+                color: getCategoryColor(category.key),
+                '&.Mui-selected': {
+                  color: getCategoryColor(category.key)
+                }
+              }}
             />
           ))}
         </Tabs>
@@ -363,184 +302,25 @@ function QueryTemplatesDialog({ open, onClose, onSelectQuery }) {
 
       {/* Content */}
       <DialogContent
-        sx={{ p: 0, flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+        sx={{ 
+          p: 0, 
+          flex: 1, 
+          overflow: 'hidden', 
+          display: 'flex', 
+          flexDirection: 'column',
+          backgroundColor: theme.palette.background.default
+        }}
       >
         {filteredCategories.map((category, categoryIndex) => (
           <TabPanel key={category.key} value={tabValue} index={categoryIndex}>
             <Box
               sx={{
-                p: 4,
+                p: 3,
                 height: '100%',
-                overflow: 'auto',
-                maxHeight: 'calc(100vh - 300px)' // Account for header and tabs
+                overflow: 'auto'
               }}
             >
-              <Grid container spacing={3}>
-                {category.queries.map((queryItem, queryIndex) => (
-                  <Grid item xs={12} md={6} lg={4} key={queryIndex}>
-                    <Card
-                      sx={{
-                        height: '100%',
-                        background:
-                          theme.palette.mode === 'dark'
-                            ? 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)'
-                            : 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 100%)',
-                        backdropFilter: 'blur(20px)',
-                        border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.6)'}`,
-                        borderRadius: 4,
-                        transition: 'all 0.3s ease-in-out',
-                        cursor: 'pointer',
-                        '&:hover': {
-                          transform: 'translateY(-8px)',
-                          boxShadow:
-                            theme.palette.mode === 'dark'
-                              ? '0 20px 40px rgba(0,0,0,0.3)'
-                              : '0 20px 40px rgba(0,0,0,0.1)',
-                          border: `1px solid ${theme.palette.primary.main}40`
-                        }
-                      }}
-                      onClick={() =>
-                        setSelectedQuery(selectedQuery === queryIndex ? null : queryIndex)
-                      }
-                    >
-                      <CardContent sx={{ p: 3 }}>
-                        {/* Header */}
-                        <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-                          <Box
-                            sx={{
-                              width: 48,
-                              height: 48,
-                              borderRadius: 2,
-                              background: getCategoryGradient(category.key),
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              mr: 2,
-                              flexShrink: 0
-                            }}
-                          >
-                            {getCategoryIcon(category.key)}
-                          </Box>
-                          <Box sx={{ flex: 1, minWidth: 0 }}>
-                            <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>
-                              {queryItem.name}
-                            </Typography>
-                            <Chip
-                              label={category.title}
-                              size="small"
-                              sx={{
-                                background: getCategoryGradient(category.key),
-                                color: 'white',
-                                fontWeight: 600
-                              }}
-                            />
-                          </Box>
-                        </Box>
-
-                        {/* Description */}
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: 'text.secondary',
-                            mb: 3,
-                            lineHeight: 1.6
-                          }}
-                        >
-                          {queryItem.description}
-                        </Typography>
-
-                        {/* Query Preview */}
-                        <Paper
-                          sx={{
-                            p: 2,
-                            borderRadius: 2,
-                            background:
-                              theme.palette.mode === 'dark'
-                                ? 'rgba(0,0,0,0.3)'
-                                : 'rgba(0,0,0,0.03)',
-                            border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'}`,
-                            fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-                            fontSize: '0.75rem',
-                            overflow: 'hidden',
-                            maxHeight: 100,
-                            mb: 3,
-                            position: 'relative',
-                            '&::after': {
-                              content: '""',
-                              position: 'absolute',
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              height: 20,
-                              background:
-                                theme.palette.mode === 'dark'
-                                  ? 'linear-gradient(transparent, rgba(0,0,0,0.3))'
-                                  : 'linear-gradient(transparent, rgba(0,0,0,0.03))',
-                              pointerEvents: 'none'
-                            }
-                          }}
-                        >
-                          <Typography
-                            sx={{
-                              color: theme.palette.mode === 'dark' ? '#86efac' : '#16a34a',
-                              whiteSpace: 'pre-wrap',
-                              wordBreak: 'break-all'
-                            }}
-                          >
-                            {queryItem.query.length > 120
-                              ? queryItem.query.substring(0, 120) + '...'
-                              : queryItem.query}
-                          </Typography>
-                        </Paper>
-
-                        {/* Actions */}
-                        <Stack direction="row" spacing={2}>
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<Copy size={16} />}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCopyQuery(queryItem.query);
-                            }}
-                            sx={{
-                              borderRadius: 2,
-                              textTransform: 'none',
-                              fontWeight: 600
-                            }}
-                          >
-                            Copy
-                          </Button>
-
-                          <Button
-                            variant="contained"
-                            size="small"
-                            startIcon={<Play size={16} />}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleUseQuery(queryItem.query);
-                            }}
-                            sx={{
-                              borderRadius: 2,
-                              textTransform: 'none',
-                              fontWeight: 600,
-                              background: getCategoryGradient(category.key),
-                              '&:hover': {
-                                background: getCategoryGradient(category.key),
-                                filter: 'brightness(1.1)'
-                              }
-                            }}
-                          >
-                            Use
-                          </Button>
-                        </Stack>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-
-              {category.queries.length === 0 && (
+              {category.queries.length === 0 ? (
                 <Box
                   sx={{
                     textAlign: 'center',
@@ -548,11 +328,161 @@ function QueryTemplatesDialog({ open, onClose, onSelectQuery }) {
                     color: 'text.secondary'
                   }}
                 >
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+                  <Typography variant="h6" sx={{ mb: 1 }}>
                     No templates found
                   </Typography>
-                  <Typography variant="body2">Try adjusting your search terms</Typography>
+                  <Typography variant="body2">
+                    Try adjusting your search terms
+                  </Typography>
                 </Box>
+              ) : (
+                <Grid container spacing={3}>
+                  {category.queries.map((queryItem, queryIndex) => (
+                    <Grid item xs={12} md={6} lg={4} key={queryIndex}>
+                      <Card
+                        sx={{
+                          height: '100%',
+                          border: 1,
+                          borderColor: 'divider',
+                          transition: 'all 0.2s ease-in-out',
+                          '&:hover': {
+                            borderColor: getCategoryColor(category.key),
+                            boxShadow: theme.shadows[4],
+                            transform: 'translateY(-2px)'
+                          }
+                        }}
+                      >
+                        <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                          {/* Header */}
+                          <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
+                            <Box
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: 1,
+                                backgroundColor: `${getCategoryColor(category.key)}15`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                mr: 2,
+                                flexShrink: 0,
+                                color: getCategoryColor(category.key)
+                              }}
+                            >
+                              {getCategoryIcon(category.key)}
+                            </Box>
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, fontSize: '1.1rem' }}>
+                                {queryItem.name}
+                              </Typography>
+                              {/* <Typography 
+                                variant="caption" 
+                                sx={{ 
+                                  color: getCategoryColor(category.key),
+                                  fontWeight: 500,
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.5px'
+                                }}
+                              >
+                                {category.title}
+                              </Typography> */}
+                            </Box>
+                          </Box>
+
+                          {/* Description */}
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: 'text.secondary',
+                              mb: 2,
+                              lineHeight: 1.5
+                            }}
+                          >
+                            {queryItem.description}
+                          </Typography>
+
+                          {/* Query Preview */}
+                          <Paper
+                            sx={{
+                              p: 2,
+                              backgroundColor: theme.palette.mode === 'dark' ? 'black' : 'grey.50',
+                              border: 1,
+                              borderColor: 'divider',
+                              borderRadius: 1,
+                              fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+                              fontSize: '0.8rem',
+                              mb: 3,
+                              flex: 1,
+                              display: 'flex',
+                              alignItems: 'flex-start'
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                color: theme.palette.mode === 'dark' ? 'primary.light' : 'primary.dark',
+                                whiteSpace: 'pre-wrap',
+                                wordBreak: 'break-word',
+                                lineHeight: 1.4,
+                                overflow: 'hidden',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 4,
+                                WebkitBoxOrient: 'vertical'
+                              }}
+                            >
+                              {queryItem.query}
+                            </Typography>
+                          </Paper>
+
+                          {/* Actions */}
+                          <Stack direction="row" spacing={2}>
+                            <Tooltip title="Copy to clipboard">
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                startIcon={<Copy size={16} />}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleCopyQuery(queryItem.query);
+                                }}
+                                sx={{
+                                  textTransform: 'none',
+                                  borderColor: 'divider',
+                                  color: 'text.secondary',
+                                  '&:hover': {
+                                    borderColor: getCategoryColor(category.key),
+                                    color: getCategoryColor(category.key)
+                                  }
+                                }}
+                              >
+                                Copy
+                              </Button>
+                            </Tooltip>
+
+                            <Button
+                              variant="contained"
+                              size="small"
+                              startIcon={<Play size={16} />}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUseQuery(queryItem.query);
+                              }}
+                              sx={{
+                                textTransform: 'none',
+                                backgroundColor: getCategoryColor(category.key),
+                                '&:hover': {
+                                  backgroundColor: getCategoryColor(category.key),
+                                  filter: 'brightness(0.9)'
+                                }
+                              }}
+                            >
+                              Use Query
+                            </Button>
+                          </Stack>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
               )}
             </Box>
           </TabPanel>

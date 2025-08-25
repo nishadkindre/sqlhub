@@ -24,8 +24,8 @@ import {
   X
 } from 'lucide-react';
 import DatabaseExplorer from '../components/DatabaseExplorer';
-import SQLEditor from '../components/SQLEditor';
-import ResultsPanel from '../components/ResultsPanel';
+import EnhancedSQLEditor from '../components/EnhancedSQLEditor';
+import EnhancedResultsPanel from '../components/EnhancedResultsPanel';
 import QueryHistory from '../components/QueryHistory';
 
 const DRAWER_WIDTH = 320;
@@ -137,68 +137,21 @@ function WorkbenchPage() {
         <Box sx={{ flex: 1, overflow: 'auto', p: 2, position: 'relative' }}>
           <Grid container spacing={2} sx={{ height: '100%' }}>
             {/* SQL Editor */}
-            <Grid
-              size={{ xs: 12, md: 6 }}
-              // lg={rightPanelCollapsed ? 12 : 6}
-              // sx={{ height: isMobile ? '50%' : '100%' }}
-            >
-              <Paper
-                elevation={0}
-                sx={{
-                  height: '100%',
-                  overflow: 'auto',
-                  transition: 'all 0.3s ease-in-out',
-                  background:
-                    theme.palette.mode === 'dark'
-                      ? 'linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%)'
-                      : 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`,
-                  borderRadius: 3,
-                  '&:hover': {
-                    boxShadow:
-                      theme.palette.mode === 'dark'
-                        ? '0 8px 32px rgba(0,0,0,0.3)'
-                        : '0 8px 32px rgba(0,0,0,0.1)'
-                  }
-                }}
-              >
-                <SQLEditor
-                  onHistoryToggle={handleHistoryToggle}
-                  historyDrawerOpen={historyDrawerOpen}
-                  onExplorerToggle={handleLeftDrawerToggle}
-                  explorerOpen={leftDrawerOpen}
-                />
-              </Paper>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <EnhancedSQLEditor
+                onHistoryToggle={handleHistoryToggle}
+                historyDrawerOpen={historyDrawerOpen}
+                onExplorerToggle={handleLeftDrawerToggle}
+                explorerOpen={leftDrawerOpen}
+              />
             </Grid>
 
             {/* Results Panel */}
             {!rightPanelCollapsed && (
               <Grid
                 size={{ xs: 12, md: 6 }}
-                // sx={{ height: isMobile ? '50%' : '100%' }}
               >
-                <Paper
-                  elevation={0}
-                  sx={{
-                    height: '100%',
-                    overflow: 'auto',
-                    transition: 'all 0.3s ease-in-out',
-                    background:
-                      theme.palette.mode === 'dark'
-                        ? 'linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%)'
-                        : 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                    border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`,
-                    borderRadius: 3,
-                    '&:hover': {
-                      boxShadow:
-                        theme.palette.mode === 'dark'
-                          ? '0 8px 32px rgba(0,0,0,0.3)'
-                          : '0 8px 32px rgba(0,0,0,0.1)'
-                    }
-                  }}
-                >
-                  <ResultsPanel />
-                </Paper>
+                <EnhancedResultsPanel />
               </Grid>
             )}
           </Grid>
